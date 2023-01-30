@@ -65,7 +65,7 @@
     <PostBuildEvent>
       <Command>mkdir "$(SolutionDir)_Binary\"
 copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"</Command>
-      <Message>Copying...</Message>
+      <Message>Copying binary...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,7 +85,7 @@ copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"</Command>
     <PostBuildEvent>
       <Command>mkdir "$(SolutionDir)_Binary\"
 copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"</Command>
-      <Message>Copying...</Message>
+      <Message>Copying binary...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
