@@ -67,7 +67,7 @@ void AppClass::InitOpenGL(void)
 }
 void AppClass::InitShaders(void)
 {
-	m_uShaderProgramID = LoadShaders("Shaders//BasicColor.vs", "Shaders//BasicColor.fs");
+	m_uShaderProgramID = LoadShaders("Shaders//BasicColor.vs", "Shaders//BasicColorToggle.fs");
 	glUseProgram(m_uShaderProgramID);
 }
 void AppClass::InitVariables(void)
@@ -105,7 +105,7 @@ void AppClass::InitVariables(void)
 }
 void AppClass::ProcessKeyboard(sf::Event a_event)
 {
-	if (a_event.key.code == sf::Keyboard::Key::Escape)//Event says I pressed the Escape key
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))//Event says I pressed the Escape key
 		m_bRunning = false;
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) //I am currently pressing the Num1 (not the same as above)
 		m_v3Color = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -115,6 +115,11 @@ void AppClass::ProcessKeyboard(sf::Event a_event)
 		m_v3Color = glm::vec3(0.0f, 0.0f, 1.0f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0))
 		m_v3Color = glm::vec3(-1.0f, -1.0f, -1.0f);
+
+	if (a_event.key.code == sf::Keyboard::Key::C) //Press c to change between base and complimentary colors
+	{
+		m_bCompColor = !m_bCompColor;
+	}
 }
 void AppClass::Display(void)
 {
@@ -124,6 +129,10 @@ void AppClass::Display(void)
 	//read uniforms and send values
 	GLuint SolidColor = glGetUniformLocation(m_uShaderProgramID, "SolidColor");
 	glUniform3f(SolidColor, m_v3Color.r, m_v3Color.g, m_v3Color.b);
+
+	//sends the m_bCompColor bool to the shader
+	GLuint CompColor = glGetUniformLocation(m_uShaderProgramID, "CompColor");
+	glUniform1i(CompColor, m_bCompColor);
 
 	//draw content
 	glDrawArrays(GL_TRIANGLES, 0, 3);
