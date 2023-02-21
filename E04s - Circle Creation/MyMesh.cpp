@@ -22,9 +22,21 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		vertex.push_back(temp);
 	}
 
+	std::vector<vector3 > vertex2;
+	theta = 0;
+	delta = static_cast<GLfloat>(2.0 * PI / static_cast<GLfloat>(a_nSubdivisions));
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		AddTri(ZERO_V3, vertex[i], vertex[(i + 1) % a_nSubdivisions]);
+		vector3 temp = vector3(cos(theta) * a_fRadius, sin(theta) * a_fRadius, 4.0f);
+		theta += delta;
+		vertex2.push_back(temp);
+	}
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		AddTri(vector3(0.0f, 0.0f,4.0f), vertex2[i], vertex2[(i + 1) % a_nSubdivisions]);
+		AddTri(vector3(0.0f, 0.0f, 0.0f), vertex[i], vertex[(i + 1) % a_nSubdivisions]);
+		//AddTri(vector3(0.0f,0.0f,0.0f), vertex[(i + 1) % a_nSubdivisions], vertex[i]);
 	}
 
 	// Adding information about color

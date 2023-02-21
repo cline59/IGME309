@@ -61,8 +61,30 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3 > vert; //vertex vector
+
+	/*
+		Calculate a_nSubdivisions number of points around a center point in a radial manner
+		then call the AddTri function to generate a_nSubdivision number of faces
+	*/
+
+	double angle = 0.0f; //curret angle
+	double pivot = 2.0f * PI / a_nSubdivisions; //degree measure to be shifted; depends on # of subdivisions
+
+	//loop to shift angle of vertex
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 newPos = vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, 0.0f);
+		angle += pivot;
+		vert.push_back(newPos);
+	}
+
+	//loop to add a triangle per subdivison base on the positioning data of the loop above
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		AddTri(vector3(0.0f, 0.0f, a_fHeight), vert[i], vert[(i + 1) % a_nSubdivisions]);
+		AddTri(vector3(0.0f, 0.0f, 0.0f), vert[(i + 1) % a_nSubdivisions], vert[i]);
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -85,8 +107,41 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3 > vert; //vertex vector
+	std::vector<vector3 > vert2; //vertex vector
+
+	/*
+		Calculate a_nSubdivisions number of points around a center point in a radial manner
+		then call the AddTri function to generate a_nSubdivision number of faces
+	*/
+
+	double angle = 0.0f; //curret angle
+	double pivot = 2.0f * PI / a_nSubdivisions; //degree measure to be shifted; depends on # of subdivisions
+	vector3 bottomFace;
+	vector3 topFace;
+
+	//Draw
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		bottomFace = vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, 0.0f);
+		topFace = vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, a_fHeight);
+		angle += pivot;
+		vert.push_back(bottomFace);
+		vert2.push_back(topFace);
+		//AddQuad(bottomFace, vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, 0.0f), vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, a_fHeight), topFace);
+		//AddQuad(vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, a_fHeight),topFace, bottomFace, vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, 0.0f));
+	}
+
+	
+
+	//loop to add a triangle per subdivison base on the positioning data of the loop above
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		AddTri(vector3(0.0f, 0.0f, a_fHeight), vert2[i], vert2[(i + 1) % a_nSubdivisions]);
+		AddTri(vector3(0.0f, 0.0f, 0.0f), vert[(i + 1) % a_nSubdivisions], vert[i]);
+		AddQuad(vert[i], vert[(i + 1) % a_nSubdivisions], vert2[(i + 1) % a_nSubdivisions], vert2[i]);
+		AddQuad(vert2[(i + 1) % a_nSubdivisions], vert2[i],vert[i], vert[(i + 1) % a_nSubdivisions]);
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -115,8 +170,73 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3 > vert; //vertex vector
+	std::vector<vector3 > vert2; //vertex vector
+	std::vector<vector3 > vert3; //vertex vector
+	std::vector<vector3 > vert4; //vertex vector
+
+	/*
+		Calculate a_nSubdivisions number of points around a center point in a radial manner
+		then call the AddTri function to generate a_nSubdivision number of faces
+	*/
+
+	double angle = 0.0f; //curret angle
+	double pivot = 2.0f * PI / a_nSubdivisions; //degree measure to be shifted; depends on # of subdivisions
+	vector3 outBottomFace;
+	vector3 outTopFace;
+	vector3 inBottomFace;
+	vector3 inTopFace;
+
+	//Draw
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		outBottomFace = vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, 0.0f);
+		outTopFace = vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, a_fHeight);
+		inBottomFace = vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, 0.0f);
+		inTopFace = vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, a_fHeight);
+		angle += pivot;
+		vert.push_back(outBottomFace);
+		vert2.push_back(outTopFace);
+		vert3.push_back(inBottomFace);
+		vert4.push_back(inTopFace);
+
+		//tubes
+		//AddQuad(outBottomFace, vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, 0.0f), vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, a_fHeight), outTopFace);
+		//AddQuad(vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, a_fHeight), outTopFace, outBottomFace, vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, 0.0f));
+
+		//AddQuad(inBottomFace, vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, 0.0f), vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, a_fHeight), inTopFace);
+		//AddQuad(vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, a_fHeight), inTopFace, inBottomFace, vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, 0.0f));
+		
+		//top
+		//AddQuad(outBottomFace, inBottomFace, vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, 0.0f), vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, 0.0f));
+		//AddQuad(vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, 0.0f), vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, 0.0f), outBottomFace, inBottomFace);
+		
+		//bottom
+		//AddQuad(outTopFace, inTopFace, vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, a_fHeight), vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, a_fHeight));
+		//AddQuad(vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, a_fHeight), vector3(cos(angle) * a_fOuterRadius, sin(angle) * a_fOuterRadius, a_fHeight), outTopFace, inTopFace);
+
+
+
+	}
+
+
+
+	//loop to add a triangle per subdivison base on the positioning data of the loop above
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		AddQuad(vert[i], vert[(i + 1) % a_nSubdivisions], vert2[(i + 1) % a_nSubdivisions], vert2[i]);
+		AddQuad(vert2[(i + 1) % a_nSubdivisions], vert2[i], vert[i], vert[(i + 1) % a_nSubdivisions]);
+
+		AddQuad(vert3[i], vert3[(i + 1) % a_nSubdivisions], vert4[(i + 1) % a_nSubdivisions], vert4[i]);
+		AddQuad(vert4[(i + 1) % a_nSubdivisions], vert4[i],vert3[i], vert3[(i + 1) % a_nSubdivisions]);
+
+		AddQuad(vert[i], vert3[i], vert3[(i + 1) % a_nSubdivisions], vert[(i + 1) % a_nSubdivisions]);
+		AddQuad(vert3[(i + 1) % a_nSubdivisions], vert[(i + 1) % a_nSubdivisions], vert[i], vert3[i]);
+
+		AddQuad(vert2[i], vert4[i], vert4[(i + 1) % a_nSubdivisions], vert2[(i + 1) % a_nSubdivisions]);
+		AddQuad(vert4[(i + 1) % a_nSubdivisions], vert2[(i + 1) % a_nSubdivisions],vert2[i], vert4[i]);
+
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -146,9 +266,60 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	double angle = 0.0f; //curret angle
+	double pivot = 2.0f * PI / a_nSubdivisionsA; //degree measure to be shifted; depends on # of subdivisions
+
+	std::vector<vector3 > vert; //vertex vector
+
+	/*
+		Calculate a_nSubdivisions number of points around a center point in a radial manner
+		then call the AddTri function to generate a_nSubdivision number of faces
+	*/
+
+	//loop to shift angle of vertex
+	for (int i = 0; i < a_nSubdivisionsA; i++)
+	{
+		vector3 newPos = vector3(cos(angle) * a_fInnerRadius, sin(angle) * a_fInnerRadius, 0.0f);
+		angle += pivot;
+		vert.push_back(newPos);
+	}
+
+	uint uSubTorus = a_nSubdivisionsA;
+	float fRadiusTorus = a_fOuterRadius;
+	GLfloat lamda = static_cast<GLfloat>(2.0 * PI / static_cast<GLfloat>(uSubTorus));
+	for (uint uSubd = 0; uSubd < a_nSubdivisionsA; uSubd++) {
+
+		matrix4 m4T = IDENTITY_M4;
+		matrix4 m4Tcopy;
+		m4T = glm::rotate(m4T, lamda * uSubd, vector3(0.0f, 0.1f, 0.0));
+		m4T = glm::translate(m4T, vector3(fRadiusTorus, 0.0f, 0.0f));
+
+		m4Tcopy = m4T;
+
+		m4Tcopy = glm::rotate(m4T, lamda * ((uSubd+1)% a_nSubdivisionsA), vector3(0.0f, 0.1f, 0.0));
+		m4Tcopy = glm::translate(m4T, vector3(fRadiusTorus, 0.0f, 0.0f));
+
+		std::vector<vector3> vertCopy;
+		vertCopy = vert;
+
+		for (int i = 0; i < a_nSubdivisionsA; i++)
+		{
+			vertCopy[i] = m4T * vector4(vertCopy[i], 1.0f);
+		}
+
+		vector3 v3Center = ZERO_V3;
+		v3Center = m4T * vector4(v3Center, 1.0f);
+		//loop to add a triangle per subdivison base on the positioning data of the loop above
+		for (int i = 0; i < a_nSubdivisionsB; i++)
+		{
+			AddTri(v3Center, vertCopy[i], vertCopy[(i + 1) % a_nSubdivisionsB]);
+			AddTri(v3Center, vertCopy[(i + 1) % a_nSubdivisionsB], vertCopy[i]);
+
+
+			AddQuad(vertCopy[i], vertCopy[(i + 1) % a_nSubdivisionsB], vert[(i + 1) % a_nSubdivisionsB], vert[i]);
+			AddQuad(vector4(vertCopy[(i + 1) % a_nSubdivisionsB], 1.0f) * m4Tcopy, vector4(vertCopy[i], 1.0f) * m4Tcopy,vertCopy[i], vertCopy[(i + 1) % a_nSubdivisionsB]);
+		}
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -171,9 +342,60 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	double angle = 0.0f; //curret angle
+	double pivot = 2.0f * PI / a_nSubdivisions; //degree measure to be shifted; depends on # of subdivisions
+
+	std::vector<vector3 > vert; //vertex vector
+
+	/*
+		Calculate a_nSubdivisions number of points around a center point in a radial manner
+		then call the AddTri function to generate a_nSubdivision number of faces
+	*/
+
+	//loop to shift angle of vertex
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 newPos = vector3(cos(angle) * a_fRadius, sin(angle) * a_fRadius, 0.0f);
+		angle += pivot;
+		vert.push_back(newPos);
+	}
+
+	uint uSubTorus = a_nSubdivisions;
+	float fRadiusTorus = 0;
+	GLfloat lamda = static_cast<GLfloat>(2.0 * PI / static_cast<GLfloat>(uSubTorus));
+	for (uint uSubd = 0; uSubd < a_nSubdivisions; uSubd++) {
+
+		matrix4 m4T = IDENTITY_M4;
+		matrix4 m4Tcopy;
+		m4T = glm::rotate(m4T, lamda * uSubd, vector3(0.0f, 0.1f, 0.0));
+		m4T = glm::translate(m4T, vector3(fRadiusTorus, 0.0f, 0.0f));
+
+		m4Tcopy = m4T;
+
+		m4Tcopy = glm::rotate(m4T, lamda * ((uSubd + 1) % a_nSubdivisions), vector3(0.0f, 0.1f, 0.0));
+		m4Tcopy = glm::translate(m4T, vector3(fRadiusTorus, 0.0f, 0.0f));
+
+		std::vector<vector3> vertCopy;
+		vertCopy = vert;
+
+		for (int i = 0; i < a_nSubdivisions; i++)
+		{
+			vertCopy[i] = m4T * vector4(vertCopy[i], 1.0f);
+		}
+
+		vector3 v3Center = ZERO_V3;
+		v3Center = m4T * vector4(v3Center, 1.0f);
+		//loop to add a triangle per subdivison base on the positioning data of the loop above
+		for (int i = 0; i < a_nSubdivisions; i++)
+		{
+			AddTri(v3Center, vertCopy[i], vertCopy[(i + 1) % a_nSubdivisions]);
+			AddTri(v3Center, vertCopy[(i + 1) % a_nSubdivisions], vertCopy[i]);
+
+
+			AddQuad(vertCopy[i], vertCopy[(i + 1) % a_nSubdivisions], vert[(i + 1) % a_nSubdivisions], vert[i]);
+			AddQuad(vector4(vertCopy[(i + 1) % a_nSubdivisions], 1.0f) * m4Tcopy, vector4(vertCopy[i], 1.0f) * m4Tcopy, vertCopy[i], vertCopy[(i + 1) % a_nSubdivisions]);
+		}
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);

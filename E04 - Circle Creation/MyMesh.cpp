@@ -30,11 +30,32 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		vert.push_back(newPos);
 	}
 
-	//loop to add a triangle per subdivison base on the positioning data of the loop above
-	for (int i = 0; i < a_nSubdivisions; i++)
-	{
-		AddTri(vector3(0.0f, 0.0f, 0.0f), vert[i], vert[(i + 1) % a_nSubdivisions]);
+	uint uSubTorus = 12;
+	float fRadiusTorus = 5.0f;
+	GLfloat lamda = static_cast<GLfloat>(2.0 * PI / static_cast<GLfloat>(uSubTorus));
+	for (uint uSubd = 0; uSubd < uSubTorus; uSubd++) {
+		
+		matrix4 m4T = IDENTITY_M4;
+		m4T = glm::rotate(m4T, lamda * uSubd, vector3(0.0f, 0.1f, 0.0));
+		m4T = glm::translate(m4T, vector3(fRadiusTorus, 0.0f, 0.0f));
+		std::vector<vector3> vertCopy;
+		vertCopy = vert;
+
+		for (int i = 0; i < a_nSubdivisions; i++)
+		{
+			vertCopy[i] = m4T * vector4(vertCopy[i], 1.0f);
+		}
+
+		vector3 v3Center = ZERO_V3;
+		v3Center = m4T * vector4(v3Center, 1.0f);
+		//loop to add a triangle per subdivison base on the positioning data of the loop above
+		for (int i = 0; i < a_nSubdivisions; i++)
+		{
+			AddTri(vector3(0.0f, 0.0f, 0.0f), vert[i], vert[(i + 1) % a_nSubdivisions]);
+		}
 	}
+
+	
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
