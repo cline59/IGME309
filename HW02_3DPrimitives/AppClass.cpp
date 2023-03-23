@@ -8,6 +8,7 @@ void Application::InitVariables(void)
 	//(I'm at [0,0,10], looking at [0,0,0] and up is the positive Y axis)
 	m_pCameraMngr->SetPositionTargetAndUpward(AXIS_Z * 10.0f, ZERO_V3, AXIS_Y);
 
+	std::vector<std::vector<std::vector<glm::vec3>>> myVariable;
 	//Allocate the memory for the shapes
 	m_pCube = new MyMesh();
 	m_pCube->GenerateCube(1.0f, C_RED);
