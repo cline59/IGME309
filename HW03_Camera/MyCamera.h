@@ -41,6 +41,7 @@ class MyCamera : BTXs::Camera
 	//matrix4 m_m4Projection = matrix4(1.0f); //Projection Matrix
 	//matrix4 m_m4View = matrix4(1.0f); //View matrix
 public:
+	quaternion qOrientaion;
 	/*
 	USAGE: Constructor
 	ARGUMENTS: ---
@@ -279,7 +280,14 @@ public:
 	OUTPUT: ---
 	*/
 	void ResetCamera(void);
-	
+
+
+	quaternion getOrientaion(void);
+	/*
+	USAGE: Helper: creates and returns the orientaion in a quaternion
+	ARGUMENTS: ---
+	OUTPUT: ?
+	*/
 protected:
 	/*
 	USAGE: Releases the object from memory

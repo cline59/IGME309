@@ -21,16 +21,42 @@ void MyCamera::MoveForward(float a_fDistance)
 	//		 in the _Binary folder you will notice that we are moving 
 	//		 backwards and we never get closer to the plane as we should 
 	//		 because as we are looking directly at it.
-	m_v3Position += vector3(0.0f, 0.0f, a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, a_fDistance);
+
+	//Every attempt to use a quaternion for the orientation has ended with the same error
+	//'static_cast': cannot convert from 'U' to 'T' in the type_vec3.inl file
+	
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), AXIS_X);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), AXIS_Y);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.z), AXIS_Z);
+
+	m_v3Position += vector3(0.0f, 0.0f, -a_fDistance) * qOrientaion;
+	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance) * qOrientaion;
+
+	m_v3PitchYawRoll = ZERO_V3;
 }
 void MyCamera::MoveVertical(float a_fDistance)
 {
-	//Tip:: Look at MoveForward
+	
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), AXIS_X);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), AXIS_Y);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.z), AXIS_Z);
+
+	m_v3Position += vector3(0.0f, a_fDistance, 0.0f) * qOrientaion;
+	m_v3Target += vector3(0.0f, a_fDistance, 0.0f) * qOrientaion;
+
+	m_v3PitchYawRoll = ZERO_V3;
 }
 void MyCamera::MoveSideways(float a_fDistance)
 {
-	//Tip:: Look at MoveForward
+	
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), AXIS_X);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), AXIS_Y);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.z), AXIS_Z);
+
+	m_v3Position += vector3(a_fDistance, 0.0f, 0.0f) * qOrientaion;
+	m_v3Target += vector3(a_fDistance, 0.0f, 0.0f) * qOrientaion;
+
+	m_v3PitchYawRoll = ZERO_V3;
 }
 void MyCamera::CalculateView(void)
 {
@@ -40,10 +66,37 @@ void MyCamera::CalculateView(void)
 	//		 it will receive information from the main code on how much these orientations
 	//		 have change so you only need to focus on the directional and positional 
 	//		 vectors. There is no need to calculate any right click process or connections.
+
+
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), AXIS_X);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), AXIS_Y);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.z), AXIS_Z);
+
+	m_v3Position *= qOrientaion;
+	m_v3Target *= qOrientaion;
+	m_v3Upward *= qOrientaion;
+
 	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Upward);
+	m_v3PitchYawRoll = ZERO_V3;
+
 }
 //You can assume that the code below does not need changes unless you expand the functionality
 //of the class or create helper methods, etc.
+
+/*
+* I tried to set up a helper function for the orientaion but it didn't work out, I kept getting a static_cast error
+* 
+quaternion MyCamera::getOrientaion(void) {
+	
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.x), AXIS_X);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.y), AXIS_Y);
+	qOrientaion = qOrientaion * glm::angleAxis(glm::radians(m_v3PitchYawRoll.z), AXIS_Z);
+
+	m_v3PitchYawRoll = ZERO_V3;
+	return qOrientaion;
+}
+*/
+
 void MyCamera::Init(vector3 a_v3Position, vector3 a_v3Target, vector3 a_v3Upward)
 {
 	m_bFPS = true;
@@ -80,6 +133,7 @@ void MyCamera::Swap(MyCamera& other)
 
 	std::swap(m_m4Projection, other.m_m4Projection);
 	std::swap(m_m4View, other.m_m4View);
+	
 }
 void MyCamera::Release(void){}
 //The big 3
