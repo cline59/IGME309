@@ -12,6 +12,15 @@ Update: 2021/02
 namespace BTX
 {
 
+//Oriented Bounding Box
+struct OBB {
+	vector3 c; // OBB center point
+	vector3 u[3]; // Local x-, y-, and z-axes
+	vector3 e; // Positive halfwidth extents of OBB along each axis
+public:
+	int TestOBBOBB(OBB& a, OBB& b); //test for OBB collision
+};
+
 //System Class
 class MyRigidBody
 {
@@ -227,6 +236,7 @@ public:
 	Output: ---
 	*/
 	void SetModelMatrix(matrix4 a_m4ModelMatrix);
+
 #pragma endregion
 	
 private:
