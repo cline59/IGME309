@@ -45,8 +45,10 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 	{
 		uint nResult = SAT(a_pOther);
 
+		bColliding = false;
 		if (nResult) //The SAT shown they are colliding
 		{
+			bColliding = false;
 			this->AddCollisionWith(a_pOther);
 			a_pOther->AddCollisionWith(this);
 		}

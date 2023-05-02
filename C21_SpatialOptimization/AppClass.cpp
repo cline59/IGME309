@@ -27,7 +27,7 @@ void Application::InitVariables(void)
 			matrix4 m4Position = glm::translate(v3Position);
 			m_pEntityMngr->SetModelMatrix(m4Position);
 
-			bool bAllEntitiesInTheirOwnSpace = false;
+			bool bAllEntitiesInTheirOwnSpace = true;
 			if (bAllEntitiesInTheirOwnSpace)
 			{
 				//We will divide the space in only 4 parts

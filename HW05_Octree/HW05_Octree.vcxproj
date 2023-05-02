@@ -107,6 +107,7 @@
     <ClCompile Include="AppClassGUI.cpp" />
     <ClCompile Include="AppClassMain.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MyOctant.cpp" />
     <ClCompile Include="Octant.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +118,7 @@
     <ClInclude Include="..\res\resource.h" />
     <ClInclude Include="AppClass.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="MyOctant.h" />
     <ClInclude Include="Octant.h" />
   </ItemGroup>
   <ItemGroup>

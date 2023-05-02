@@ -45,6 +45,9 @@
     <ClCompile Include="Octant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MyOctant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">
@@ -69,6 +72,9 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Octant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyOctant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
